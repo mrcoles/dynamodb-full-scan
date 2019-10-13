@@ -1,0 +1,26 @@
+{
+  "name": "dynamodb-full-scan",
+  "version": "0.0.1",
+  "description": "Helpers for doing full paginated scan operations as a Promise or AsyncGenerator with the \"asw-sdk\" DynamoDB DocumentClient.",
+  "main": "dist/index.js",
+  "repository": "github:mrcoles/dynamodb-full-scan",
+  "files": [
+    "dist/",
+    "bin/"
+  ],
+  "author": "Peter Coles <peter@mrcoles.com>",
+  "license": "MIT",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "watch": "npm run build -- -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.12",
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.533.0"
+  }
+}
