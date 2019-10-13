@@ -18,7 +18,7 @@ _Say goodbye to that old-fashioned and clunky `onScan` pattern and embrace async
 
 Return a Promise of all the Items from a scan in a single array. Set `maxDepth` to limit how many times it pages and/or `sleepWait` to add a delay between pagination calls (in milliseconds). You can also cast the results via the generic.
 
-### Signature
+Signature:
 
 ```typescript
 function fullScanProm<I extends DocumentClient.AttributeMap>(
@@ -29,7 +29,7 @@ function fullScanProm<I extends DocumentClient.AttributeMap>(
 ): Promise<I[]>;
 ```
 
-### Example
+Example:
 
 ```typescript
 type Item = { id: string; name: string; description?: string };
@@ -48,7 +48,7 @@ for (let item of items) {
 
 Return an async generator that yields items from a full scan operation (albeit the scans are performed in a lazy manner, only being requested if you iterate up to the next page of items).
 
-### Signature
+Signature:
 
 ```typescript
 function* fullScanSeq<I extends DocumentClient.AttributeMap>(
@@ -57,7 +57,7 @@ function* fullScanSeq<I extends DocumentClient.AttributeMap>(
 ): AsyncGenerator<I, void, undefined>;
 ```
 
-### Example
+Example:
 
 ```typescript
 type Item = { id: string; name: string; description?: string };
