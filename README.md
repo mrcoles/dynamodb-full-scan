@@ -67,7 +67,7 @@ const itemSeq = await fullScan<Item>(docClient, {
   ExpressionAttributeNames: { "#d": "description" }
 });
 
-for async (let item of items) {
+for await (let item of items) {
   console.log(`item: id=${item.id}, name=${item.name}`);
 }
 ```
