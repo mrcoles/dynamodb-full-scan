@@ -1,5 +1,26 @@
 import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
 
+// perform a scan and return a generator that yields each page of Items
+export async function* fullScanSeq<I extends DocumentClient.AttributeMap>(
+  docClient: DocumentClient,
+  params: DocumentClient.ScanInput
+) {
+  while (true) {
+    const data = await docClient.scan(params).promise();
+
+    if (data.Items && data.Items.length) {
+      const items = data.Items as I[];
+      yield* items;
+    }
+
+    if (data.LastEvaluatedKey === undefined) {
+      break;
+    }
+
+    params = { ...params, ExclusiveStartKey: data.LastEvaluatedKey };
+  }
+}
+
 // allow full scan in one promise function
 export async function fullScanProm<I extends DocumentClient.AttributeMap>(
   docClient: DocumentClient,
@@ -34,27 +55,6 @@ export async function fullScanProm<I extends DocumentClient.AttributeMap>(
   }
 
   return items;
-}
-
-// perform a scan and return a generator that yields each page of Items
-export async function* fullScanSeq<I extends DocumentClient.AttributeMap>(
-  docClient: DocumentClient,
-  params: DocumentClient.ScanInput
-) {
-  while (true) {
-    const data = await docClient.scan(params).promise();
-
-    if (data.Items && data.Items.length) {
-      const items = data.Items as I[];
-      yield* items;
-    }
-
-    if (data.LastEvaluatedKey === undefined) {
-      break;
-    }
-
-    params = { ...params, ExclusiveStartKey: data.LastEvaluatedKey };
-  }
 }
 
 // Helpers
