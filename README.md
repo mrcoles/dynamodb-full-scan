@@ -8,11 +8,39 @@ The DynamoDB DocumentClient class in the "aws-sdk" node package exposes Promise 
 docClient.put(params).promise();
 ```
 
-You can use this Promise API with the scan operation, but if you want to do a full scan of the database, then it requires a little extra work.
+You can use this Promise API with the scan operation, but if you want to do a full scan of the database, then it requires a little extra work, with most examples showing an `onScan` function that recursively calls itself until `LastEvaluatedKey === undefined`.
 
 This library exposes two helper functions to let you get the results of a full paginated scan operation as a single Promise or lazily evaluated as an AsyncGenerator, returning the combined `Items` of each paginated call.
 
 _Say goodbye to that old-fashioned and clunky `onScan` pattern and embrace async generators!_
+
+## fullScanSeq - async generator for all items from a full scan
+
+Return an async generator that yields items from a full scan operation (albeit the scans are performed in a lazy manner, only being requested if you iterate up to the next page of items).
+
+Signature:
+
+```typescript
+function* fullScanSeq<I extends DocumentClient.AttributeMap>(
+  docClient: DocumentClient,
+  params: DocumentClient.ScanInput
+): AsyncGenerator<I, void, undefined>;
+```
+
+Example:
+
+```typescript
+type Item = { id: string; name: string; description?: string };
+const itemSeq = await fullScan<Item>(docClient, {
+  TableName: "items",
+  FilterExpression: "attribute_not_exists(#d)",
+  ExpressionAttributeNames: { "#d": "description" }
+});
+
+for await (let item of items) {
+  console.log(`item: id=${item.id}, name=${item.name}`);
+}
+```
 
 ## fullScanProm - single promise of all items for a full scan
 
@@ -40,34 +68,6 @@ const items = await fullScan<Item>(docClient, {
 });
 
 for (let item of items) {
-  console.log(`item: id=${item.id}, name=${item.name}`);
-}
-```
-
-## scanSeq - async generator for all items from a full scan
-
-Return an async generator that yields items from a full scan operation (albeit the scans are performed in a lazy manner, only being requested if you iterate up to the next page of items).
-
-Signature:
-
-```typescript
-function* fullScanSeq<I extends DocumentClient.AttributeMap>(
-  docClient: DocumentClient,
-  params: DocumentClient.ScanInput
-): AsyncGenerator<I, void, undefined>;
-```
-
-Example:
-
-```typescript
-type Item = { id: string; name: string; description?: string };
-const itemSeq = await fullScan<Item>(docClient, {
-  TableName: "items",
-  FilterExpression: "attribute_not_exists(#d)",
-  ExpressionAttributeNames: { "#d": "description" }
-});
-
-for await (let item of items) {
   console.log(`item: id=${item.id}, name=${item.name}`);
 }
 ```

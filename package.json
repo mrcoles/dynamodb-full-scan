@@ -1,6 +1,6 @@
 {
   "name": "dynamodb-full-scan",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Helpers for doing full paginated scan operations as a Promise or AsyncGenerator with the \"asw-sdk\" DynamoDB DocumentClient.",
   "main": "dist/index.js",
   "repository": "github:mrcoles/dynamodb-full-scan",
