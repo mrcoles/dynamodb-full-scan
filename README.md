@@ -1,4 +1,4 @@
-# DynamoDB Async Scan
+# DynamoDB Full Scan
 
 _Helper functions for doing full paginated scan operations as a Promise or AsyncGenerator with the "asw-sdk" DynamoDB DocumentClient._
 
@@ -16,7 +16,7 @@ _Say goodbye to that old-fashioned and clunky `onScan` pattern and embrace async
 
 ## fullScanSeq - async generator for all items from a full scan
 
-Return an async generator that yields items from a full scan operation (albeit the scans are performed in a lazy manner, only being requested if you iterate up to the next page of items).
+Return an async generator that yields items from a full scan operation (albeit the scans are performed in a lazy manner, only being requested if you iterate up to the next page of items). You can also cast the results via the generic.
 
 Signature:
 
@@ -31,7 +31,8 @@ Example:
 
 ```typescript
 type Item = { id: string; name: string; description?: string };
-const itemSeq = await fullScan<Item>(docClient, {
+
+const itemSeq = await fullScanSeq<Item>(docClient, {
   TableName: "items",
   FilterExpression: "attribute_not_exists(#d)",
   ExpressionAttributeNames: { "#d": "description" }
@@ -44,7 +45,7 @@ for await (let item of items) {
 
 ## fullScanProm - single promise of all items for a full scan
 
-Return a Promise of all the Items from a scan in a single array. Set `maxDepth` to limit how many times it pages and/or `sleepWait` to add a delay between pagination calls (in milliseconds). You can also cast the results via the generic.
+Return a Promise of all the Items from a scan in a single array. Set `maxDepth` to limit how many times it pages and/or `sleepWait` to add a delay between pagination calls (in milliseconds).
 
 Signature:
 
@@ -61,7 +62,8 @@ Example:
 
 ```typescript
 type Item = { id: string; name: string; description?: string };
-const items = await fullScan<Item>(docClient, {
+
+const items = await fullScanProm<Item>(docClient, {
   TableName: "items",
   FilterExpression: "attribute_not_exists(#d)",
   ExpressionAttributeNames: { "#d": "description" }
