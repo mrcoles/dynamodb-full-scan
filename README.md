@@ -32,7 +32,7 @@ Example:
 ```typescript
 type Item = { id: string; name: string; description?: string };
 
-const itemSeq = await fullScanSeq<Item>(docClient, {
+const itemSeq = fullScanSeq<Item>(docClient, {
   TableName: "items",
   FilterExpression: "attribute_not_exists(#d)",
   ExpressionAttributeNames: { "#d": "description" }
